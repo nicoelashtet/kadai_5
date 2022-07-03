@@ -1,0 +1,171 @@
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>CRUD Node.js and Mysql</title>
+  <link href="/assets/css/bootstrap.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+  <div class="container">
+    <h2>製品リスト</h2>
+		<button class="btn btn-success" data-toggle="modal" data-target="#myModalAdd">製品追加</button>
+    <table class="table table-striped" id="mytable">
+      <thead>
+        <tr>
+          {{!-- <th>Product ID</th> --}}
+          <th>製品リスト</th>
+          <th>製品数量</th>
+          <th>値段($)</th>
+           <th>人気</th>
+          <th>操作</th>
+        </tr>
+      </thead>
+      <tbody>
+         {{#each results}}
+        <tr>
+          {{!-- <td>{{ product_id }}</td> --}}
+          <td>{{ product_name }}</td>
+          <td>{{ product_qty }}</td> 
+          <td>{{ product_price }}</td>
+           <td>{{ famous }}</td>
+          <td>
+            <a href="javascript:void(0);" class="btn btn-sm btn-info edit" data-id="{{ product_id }}" data-product_name="{{ product_name }}" data-product_price="{{ product_price }}" data-famous="{{ famous }}"  data-product_qty="{{ product_qty }}">変更</a>
+            <a href="javascript:void(0);" class="btn btn-sm btn-danger delete" data-id="{{ product_id }}">削除</a>
+          </td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
+
+	<!-- Add New Product Modal-->
+	  <form action="/save" method="post">
+        <div class="modal fade" id="myModalAdd" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+         <div class="modal-dialog" role="document">
+           <div class="modal-content">
+             <div class="modal-header">
+               <h5 class="modal-title" id="exampleModalLabel">製品追加</h5>
+               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                 <span aria-hidden="true">&times;</span>
+               </button>
+             </div>
+             <div class="modal-body">
+               <div class="form-group">
+                   <input type="text" name="product_name" class="form-control" placeholder="製品名" required>
+               </div>
+               <div class="form-group">
+                   <input type="text" name="product_qty" class="form-control" placeholder="製品数量" required>
+               </div>
+               <div class="form-group">
+                   <input type="text" name="product_price" class="form-control" placeholder="値段" required>
+               </div>
+                <div class="form-group">
+                   <input type="text" name="famous" class="form-control" placeholder="人気" required>
+               </div>
+
+               {{!-- <div class="form-group">
+                   <input type="text" name="product_qty" class="form-control" placeholder="qty" required>
+               </div> --}}
+             </div>
+             <div class="modal-footer">
+               <button type="button" class="btn btn-secondary" data-dismiss="modal">閉じる</button>
+               <button type="submit" class="btn btn-primary">保存</button>
+             </div>
+           </div>
+         </div>
+        </div>
+	 </form>
+
+	 <!-- Edit Product Modal-->
+   <form action="/update" method="post">
+       <div class="modal fade" id="EditModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">製品更新</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div class="form-group">
+                製品名 <br>
+                  <input type="text" name="product_name" class="form-control product_name" placeholder="製品名" required>
+              </div>
+              製品数量 <br>
+              <div class="form-group">
+                  <input type="text" name="product_qty" class="form-control product_qty" placeholder="製品数量" required>
+              </div>
+              値段<br>
+              <div class="form-group">
+                  <input type="text" name="product_price" class="form-control price" placeholder="Price" required>
+              </div>
+              人気<br>
+              <div class="form-group">
+                  <input type="text" name="famous" class="form-control famous" placeholder="famous" required>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <input type="hidden" name="id" class="product_id">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">閉じる</button>
+              <button type="submit" class="btn btn-primary">更新</button>
+            </div>
+          </div>
+        </div>
+       </div>
+  </form>
+
+	 <!-- Delete Product Modal-->
+ 	  <form id="add-row-form" action="/delete" method="post">
+ 	     <div class="modal fade" id="DeleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+ 	        <div class="modal-dialog">
+ 	           <div class="modal-content">
+ 	               <div class="modal-header">
+									 	<h5 class="modal-title" id="myModalLabel">製品削除</h5>
+ 	                  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+ 	               </div>
+ 	               <div class="modal-body">
+												 <strong>削除しますか?</strong>
+ 	               </div>
+ 	               <div class="modal-footer">
+									 		<input type="hidden" name="product_id" class="form-control product_id2" required>
+ 	                   	<button type="button" class="btn btn-default" data-dismiss="modal">閉じる</button>
+ 	                  	<button type="submit" class="btn btn-success">削除</button>
+ 	               </div>
+ 	      			</div>
+ 	        </div>
+ 	     </div>
+ 	 </form>
+
+{{!-- <script src="/assets/js/jquery-3.3.1.js"></script> --}}
+<script src="/assets/js/jquery-3.6.0.js"></script>
+<script src="/assets/js/bootstrap.js"></script>
+<script>
+    $(document).ready(function(){
+			//showing data to modal for edit record
+      $('#mytable').on('click','.edit',function(){
+        var product_id = $(this).data('id');
+        var product_name = $(this).data('product_name');
+        var product_qty = $(this).data('product_qty');
+        var product_price = $(this).data('product_price');
+        var famous = $(this).data('famous');
+        
+        $('#EditModal').modal('show');
+        $('.product_name').val(product_name);
+        $('.product_qty').val(product_qty);
+        $('.price').val(product_price);
+        $('.product_id').val(product_id);
+        $('.famous').val(famous);
+        
+        
+      });
+			//showing modal for delete record
+			$('#mytable').on('click','.delete',function(){
+        var product_id = $(this).data('id');
+        $('#DeleteModal').modal('show');
+        $('.product_id2').val(product_id);
+      });
+
+    });
+</script>
+</body>
+</html>
